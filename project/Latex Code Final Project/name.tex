@@ -1,0 +1,65 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{cite}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+% \usepackage[margin=1in]{geometry} % Optional: Adjust margins as needed
+
+\title{Optimized Recursive Partitioning for Encoding and Decoding IoT Sensor Time Series Data}
+\author{
+    \IEEEauthorblockN{Haris Ghafoor}
+    \IEEEauthorblockA{
+        Department of Computational Science and Engineering \\
+        Yonsei University, Seoul, Korea \\
+        ghafoorharis@yonsei.ac.kr
+    }
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+% Your abstract here
+\end{abstract}
+
+\section{Methodology}
+
+\subsection{Encoding Process}
+\textbf{Pseudocode for Encoding:}
+
+\begin{algorithm}[H]
+\caption{Encode(data, threshold)}
+\begin{algorithmic}[1]
+    \IF{$\text{length}(data) \leq \text{threshold}$}
+        \RETURN [\textbf{max}(data)]
+    \ENDIF
+    \STATE $mid \gets \lfloor \frac{\text{length}(data)}{2} \rfloor$
+    \STATE $left\_encoded \gets \text{Encode}(data[1 \dots mid], \text{threshold})$
+    \STATE $right\_encoded \gets \text{Encode}(data[mid+1 \dots \text{end}], \text{threshold})$
+    \RETURN $left\_encoded \;||\; right\_encoded$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Decoding Process}
+\textbf{Pseudocode for Decoding:}
+
+\begin{algorithm}[H]
+\caption{Decode(encoded\_data, original\_length, threshold)}
+\begin{algorithmic}[1]
+    \IF{$\text{length}(encoded\_data) = 1$}
+        \RETURN [\text{encoded\_data}[1] \text{ repeated } \text{original\_length} \text{ times}]
+    \ENDIF
+    \STATE $half\_len \gets \lfloor \frac{\text{original\_length}}{2} \rfloor$
+    \STATE $mid\_point \gets \lfloor \frac{\text{length}(encoded\_data)}{2} \rfloor$
+    \STATE $left \gets \text{Decode}(encoded\_data[1 \dots mid\_point], half\_len, \text{threshold})$
+    \STATE $right \gets \text{Decode}(encoded\_data[mid\_point+1 \dots \text{end}], (\text{original\_length} - half\_len), \text{threshold})$
+    \RETURN $left \;||\; right$
+\end{algorithmic}
+\end{algorithm}
+
+% Continue with other sections...
+
+\end{document}

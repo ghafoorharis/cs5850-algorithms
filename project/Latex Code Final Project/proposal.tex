@@ -1,0 +1,85 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{cite}
+
+\title{Optimized Recursive Partitioning for Encoding and Decoding IoT Sensor Time Series Data}
+\author{\IEEEauthorblockN{Haris Ghafoor}
+% \IEEEauthorblockA{
+% ghafoorharisyonsei.ac.kr\\
+% Department of Computational Science and Engineering, Yonsei University, Seoul, Korea\\
+% % 06th Nov, 2024\\
+% % ghafoorharisyonsei.ac.kr
+% }
+\IEEEauthorblockA{
+    Department of Computational Science and Engineering \\
+    Yonsei University, Seoul, Korea \\
+    ghafoorharis@yonsei.ac.kr
+}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The challenge of encoding and decoding time series data efficiently is critical in real-time systems, particularly in environments with limited memory and processing power, such as microcontroller-based systems used in smart factories. This paper presents an encoding and decoding method that minimizes space usage while maintaining accurate data reconstruction, achieving an efficient, space-saving approach that surpasses traditional methods like FFT in space and time complexity without compromising performance.
+\end{abstract}
+
+\section{Problem Statement}
+The challenge of encoding and decoding time series data efficiently is critical in real-time systems, particularly in environments with limited memory and processing power, such as microcontroller-based systems used in smart factories. Traditional algorithms like the Fast Fourier Transform (FFT) provide comprehensive frequency domain encoding but come with significant space and computational costs, making them unsuitable for resource-constrained devices.
+
+The task is to design an encoding and decoding method that minimizes space usage while maintaining accurate data reconstruction. The goal is to achieve an efficient, space-saving approach that surpasses both the space and time complexity of traditional methods like FFT without compromising on performance.
+
+\section{Background}
+Traditional methods like FFT transform the entire signal into the frequency domain, requiring \( O(N) \) space, where \( N \) is the number of data points. This space complexity can be prohibitive for real-time, high-frequency sensor data. In some cases, due to resource constraints, simpler approaches such as transmitting only the top 20 or 30 values are used; however, these methods often introduce significant error.
+
+To address these limitations, we propose a recursive, partition-based algorithm (divide and conquer) that partitions the time series into smaller segments, encodes only key features (e.g., maximum values), and reconstructs the data with high fidelity. This method achieves substantial space savings over FFT while retaining competitive runtime performance and maintaining accurate signal reconstruction.
+
+\section{Proposed Method}
+The algorithm recursively partitions the time series into subarrays, extracts key features, and reconstructs the signal with minimal space usage.
+
+\subsection{Encoding Process}
+\textbf{Pseudocode for Encoding:}
+\begin{verbatim}
+Encode(data, threshold):
+    if len(data) <= threshold:
+        return [max(data)]
+    mid = len(data) // 2
+    return Encode(data[:mid], threshold) + Encode(data[mid:], threshold)
+\end{verbatim}
+
+\subsection{Decoding Process}
+\textbf{Pseudocode for Decoding:}
+\begin{verbatim}
+Decode(encoded_data, original_length, threshold):
+    if len(encoded_data) == 1:
+        return [encoded_data[0]] * original_length
+    half_len = original_length // 2
+    left = Decode(encoded_data[:len(encoded_data)//2], half_len, threshold)
+    right = Decode(encoded_data[len(encoded_data)//2:], original_length - half_len, threshold)
+    return left + right
+\end{verbatim}
+
+\subsection{Complexity Analysis}
+\textbf{Time Complexity:} Given the recursive nature:
+\[
+T(N) = k \cdot T\left(\frac{N}{k}\right) + O(1)
+\]
+Solving this, the time complexity using master theorem is \( O(N \log(N/\text{threshold})) \). This is comparable to FFT's \( O(N \log N) \) but with a significant advantage when the threshold is appropriately chosen, allowing for optimization tailored to specific data sets and environments.
+
+\textbf{Space Complexity:} \( O(N/k) \), where \( k \) is related to the threshold, results in approximately half the space required by FFT.
+
+\subsection{Error Bounds}
+The proposed algorithm encodes data by extracting key features from subarrays, which may introduce reconstruction error compared to the original signal. The error bound depends on the nature of the extracted feature (e.g., maximum value) and the chosen threshold \( k \).
+
+\section{Advantages}
+- \textbf{Reduced Space Complexity:} Less memory-intensive than FFT, making it suitable for low-memory devices.
+- \textbf{Improved Runtime Efficiency:} The algorithm's recursive nature allows for tailored optimizations based on the threshold parameter, giving it a runtime edge in certain scenarios over FFT.
+- \textbf{Customizable Compression:} Controlled via the threshold parameter.
+- \textbf{Suitability for Low-Memory Devices:} Ideal for BLE-based systems.
+
+\end{document}
+
+
